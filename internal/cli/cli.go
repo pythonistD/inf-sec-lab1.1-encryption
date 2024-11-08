@@ -3,12 +3,15 @@ package cli
 import (
 	"bufio"
 	"fmt"
-	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/decrypt"
-	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/dto"
-	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/encrypt"
 	"io"
 	"os"
 	"strconv"
+)
+import (
+	"github.com/pythonistD/inf-sec-lab1.1-encryption/internal/fileio"
+	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/decrypt"
+	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/dto"
+	"github.com/pythonistD/inf-sec-lab1.1-encryption/pkg/encrypt"
 )
 
 func cryptOrDecrypt() string {
@@ -59,7 +62,7 @@ func getShift() string {
 	var err error
 	var n int
 	for flag {
-		fmt.Println("Введите Ключ шфирования - значение сдвига N")
+		fmt.Println("Введите Ключ шифрования - значение сдвига N")
 		_, err = fmt.Scan(&mod)
 		if err != nil {
 			fmt.Println(err)
@@ -106,9 +109,12 @@ func getChars(desc io.Reader) []rune {
 		line = append(line, '\n')
 		lines = append(lines, line...)
 	}
+	fmt.Println("Содержимое файла:")
+	fmt.Println("________________________")
 	for _, v := range lines {
 		fmt.Printf("%c", v)
 	}
+	fmt.Println("________________________")
 	return lines
 }
 
@@ -124,8 +130,8 @@ func getFileDescriptor() io.Reader {
 			fmt.Println(err)
 			continue
 		}
-		//mod = "files/inData.txt"
-		mod = "files/outData.txt"
+		mod = "files/inData.txt"
+		//mod = "files/outData.txt"
 		if desc, err = os.Open(mod); err != nil {
 			fmt.Printf("Ошибка чтения файла: %v\n", err)
 			continue
@@ -136,18 +142,23 @@ func getFileDescriptor() io.Reader {
 }
 
 func Execute() {
-	//var err error
+	var err error
+	var dataToWrite []rune
 
 	mod := cryptOrDecrypt()
 	fmt.Printf("Выбран режим: %s\n", mod)
 	//inputOption := fromCmdOrFile()
-	lang := getLang()
+	//lang := getLang()
 	chars := getChars(getFileDescriptor())
 	shift, _ := strconv.Atoi(getShift())
-	inputDataDto := dto.InputDataDto{Symbols: chars, Shift: shift, Lang: lang}
+	inputDataDto := dto.InputDataDto{Symbols: chars, Shift: shift}
 	if mod == "1" {
-		encrypt.CaesarCipherEncrypt(inputDataDto)
+		dataToWrite = encrypt.CaesarCipherEncrypt(inputDataDto)
 	} else if mod == "2" {
-		decrypt.CaesarCipherDecrypt(inputDataDto)
+		dataToWrite = decrypt.CaesarCipherDecrypt(inputDataDto)
+	}
+	err = fileio.WriteText(dataToWrite, "./files/outData.txt")
+	if err != nil {
+		fmt.Printf("Ошибка во время выполнения программы: %v\n", err)
 	}
 }

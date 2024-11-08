@@ -8,3 +8,5 @@ vet: fmt
 	go vet ./...
 build:
 	go build -o ./bin/encryptionApp ./cmd/encryptionApp/main.go
+exec: build
+	./bin/encryptionApp/main.exe
