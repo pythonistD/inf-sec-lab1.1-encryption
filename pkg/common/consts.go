@@ -7,6 +7,11 @@ var SpecialChars = map[rune]struct{}{
 }
 
 const (
-	RusLeft  rune = 1040
-	RusRight rune = 1103
+	RusLeft        rune = 1040
+	RusRight       rune = 1103
+	RussianCapital      = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+	RussianLower        = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+	RussianAll          = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+	EnglishCapital      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	EnglishAll          = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
